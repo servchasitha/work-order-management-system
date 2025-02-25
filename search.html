@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="https://www.singerslfiles.com/images/singer-logos/singer_favicon.ico" type="image/x-icon">
+    <title>Work Order Details</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        #woStatusSection, #repairStatusSection {
+            background-color: red;
+            color: white;
+        }
+        @keyframes blink {
+            0% { opacity: 1; }
+            50% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+        .blink {
+            animation: blink 1s infinite;
+        }
+        .underline {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+
+     <div class="container py-4">
+        <h1 class="text-center">Work Order Management System</h1>
+        <div class="input-group mb-3">
+            <input type="text" id="searchInput" class="form-control" placeholder="Enter Work Order Number or Serial...">
+            <button class="btn btn-primary" onclick="searchWorkOrder()">
+                <i class="fas fa-search"></i> Search
+            </button>
+        </div>
+        <div class="card p-3 d-none" id="workOrderDetails">
+            <div class="row">
+    <div class="col-md-4">
+        <div class="card p-3" id="woStatusSection">
+            <h3><i class="fas fa-flag"></i> WO Status</h3>
+            <p><i class="fas fa-circle"></i> Status: <span id="woStatus" class="blink"></span></p>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card p-3 bg-secondary text-white">
+            <h3><i class="fas fa-tasks"></i> Subjob ID</h3>
+            <p><i class="fas fa-info-circle"></i> Status: <span id="subjobStatus">Subjob not available</span></p>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card p-3" id="repairStatusSection">
+            <h3><i class="fas fa-hammer"></i> Repair Status</h3>
+            <p><i class="fas fa-wrench"></i> Status: <span id="repairStatus" class="blink"></span></p>
+        </div>
+    </div>
+</div>
+
+<div class="card p-3 mt-3" id="serviceInfoSection">
+    <h3><i class="fas fa-wrench"></i> Service Info</h3>
+    <div class="row">
+        <div class="col-md-6">
+            <p><i class="fas fa-hashtag"></i> SR or WO Number: <span id="woNumber" class="underline"></span></p>
+            <p><i class="fas fa-calendar-day"></i> WO Open Date: <span id="woOpenDate" class="underline"></span></p>
+            <p><i class="fas fa-user-tie"></i> SFA: <span id="sfa" class="underline"></span></p>
+        </div>
+        <div class="col-md-6">
+            <p><i class="fas fa-building"></i> Service Center: <span id="serviceCenter" class="underline"></span></p>
+            <p><i class="fas fa-calendar-check"></i> WO Closure Date: <span id="woClosureDate" class="underline"></span></p>
+            <p><i class="fas fa-calendar-check"></i> Remarks: <span id="comments2" class="underline"></span></p>
+        </div>
+    </div>
+</div>
+
+<!-- Add this to your CSS -->
+<style>
+    #serviceInfoSection {
+        background-color: blue;  /* Set background to blue */
+        color: white;            /* Set text color to white */
+    }
+
+    #serviceInfoSection .underline {
+        text-decoration: underline;  /* Add underline to the text */
+    }
+
+    #serviceInfoSection h3 {
+        color: white;  /* Set the title text color to white */
+    }
+
+    #serviceInfoSection p {
+        color: white;  /* Set paragraph text color to white */
+    }
+</style>
+
+            <div class="row mt-3 row-cols-1 row-cols-md-2 g-3">
+    <!-- Customer Info Section -->
+    <div class="col">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body">
+                <h3 class="card-title"><i class="fas fa-user"></i> Customer Info</h3>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item"><strong>Name:</strong> <span id="customerName"></span></li>
+                    <li class="list-group-item"><strong>Mobile:</strong> <span id="customerMobile"></span></li>
+                    <li class="list-group-item"><strong>Location:</strong> <span id="customeraddress"></span></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Product Details Section -->
+    <div class="col">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body">
+                <h3 class="card-title"><i class="fas fa-cogs"></i> Product Details</h3>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item"><strong>Model:</strong> <span id="model"></span></li>
+                    <li class="list-group-item"><strong>Serial:</strong> <span id="serial"></span></li>
+                    <li class="list-group-item"><strong>Defect:</strong> <span id="defect"></span></li>
+                    <li class="list-group-item"><strong>Warranty Status:</strong> <span id="warrantyStatus"></span></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- New Sections: SHOP CODE & ORDER NUMBER -->
+<div class="row mt-3 row-cols-1 row-cols-md-2 g-3">
+    <!-- Shop Code Section (Red Background) -->
+    <div class="col">
+        <div class="card h-100 shadow-sm text-white" style="background-color: red;">
+            <div class="card-body">
+                <h3 class="card-title"><i class="fas fa-store"></i> Shop Code</h3>
+                <p><strong>Code:</strong> <span id="shopCode">N/A</span></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Order Number Section (Blue Background) -->
+    <div class="col">
+        <div class="card h-100 shadow-sm text-white" style="background-color: blue;">
+            <div class="card-body">
+                <h3 class="card-title"><i class="fas fa-receipt"></i> Order Number</h3>
+                <p><strong>Number:</strong> <span id="orderNumber">N/A</span></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+    <script>
+        const apiUrl = 'https://sheetdb.io/api/v1/fgo8npkoty9ud';
+        let allData = [];
+        fetch(apiUrl)
+            .then(response => response.json())
+            .then(data => { allData = data; })
+            .catch(error => console.error('Error fetching data: ', error));
+        function searchWorkOrder() {
+            const searchTerm = document.getElementById('searchInput').value.trim().toLowerCase();
+            if (!searchTerm) return;
+            const matchedWorkOrder = allData.find(item => 
+                item['SR OR WO NUMBER'].toString().toLowerCase().includes(searchTerm) ||
+                item['SERIAL'].toString().toLowerCase().includes(searchTerm)
+                
+                
+            );
+            if (matchedWorkOrder) displayWorkOrderDetails(matchedWorkOrder);
+        }
+        function displayWorkOrderDetails(item) {
+    document.getElementById('woNumber').textContent = item['SR OR WO NUMBER'];
+    document.getElementById('woOpenDate').textContent = item['SR OR WO OPEN DATE'];
+    document.getElementById('sfa').textContent = item['SFA'];
+    document.getElementById('serviceCenter').textContent = item['SERVICE CENTER'];
+    document.getElementById('woClosureDate').textContent = item['WO CLOSURE DATE'] || 'WO is not closed';
+    document.getElementById('customerName').textContent = item['CUSTOMER NAME'];
+    document.getElementById('customerMobile').textContent = item['CUSTOMER MOBILE NUMBER'];
+    document.getElementById('customeraddress').textContent = item['CUSTOMER ADDRESS'];
+    document.getElementById('model').textContent = item['MODEL'];
+    document.getElementById('serial').textContent = item['SERIAL'];
+    document.getElementById('defect').textContent = item['DEFECT'];
+    document.getElementById('warrantyStatus').textContent = item['WARRENTY TYPE'];
+    document.getElementById('woStatus').textContent = item['WO STATUS'];
+    document.getElementById('repairStatus').textContent = item['REPAIR STATUS'];
+    document.getElementById('comments2').textContent = item['COMMENTS2'];
+
+
+    // Set Subjob ID
+    document.getElementById('subjobStatus').textContent = item['SUBJOB ID'] ? item['SUBJOB ID'] : 'Subjob not available';
+
+    // Set new sections SHOP CODE & ORDER NUMBER
+    document.getElementById('shopCode').textContent = item['SHOP CODE'] ? item['SHOP CODE'] : 'N/A';
+    document.getElementById('orderNumber').textContent = item['ORDER NUMBER'] ? item['ORDER NUMBER'] : 'N/A';
+
+    document.getElementById('workOrderDetails').classList.remove('d-none');
+function searchWorkOrder() {
+    const searchTerm = document.getElementById('searchInput').value.trim().toLowerCase();
+    if (!searchTerm) return;}
+
+   
+}
+
+
+
+    </script>
+
+
+   <!-- Home icon that links to home.html with blinking effect and custom tooltip -->
+ <a href="home.html" class="home-link" style="position: fixed; bottom: 20px; right: 20px; text-decoration: none; z-index: 100;">
+    <i class="fa-solid fa-house blink" style="font-size: 40px; color: red;"></i>
+    <span class="tooltip-text">Go to Home Page</span>
+</a>
+
+
+<!-- Rest of your content here... -->
+
+<style>
+    /* Blinking effect for the home icon */
+    @keyframes blink {
+        0% {
+            opacity: 1;
+        }
+        50% {
+            opacity: 0;
+        }
+        100% {
+            opacity: 1;
+        }
+    }
+
+    .blink {
+        animation: blink 1s infinite;
+    }
+
+    /* Tooltip text styling */
+    .home-link {
+        position: relative;
+        display: inline-block;
+    }
+
+    .tooltip-text {
+        visibility: hidden;
+        width: 120px;
+        background-color: #555;
+        color: #fff;
+        text-align: center;
+        border-radius: 5px;
+        padding: 5px;
+        position: absolute;
+        bottom: 100%; /* Position the tooltip above the icon */
+        left: 50%;
+        margin-left: -60px; /* Center the tooltip */
+        opacity: 0;
+        transition: opacity 0.3s;
+    }
+
+    .home-link:hover .tooltip-text {
+        visibility: visible;
+        opacity: 1;
+    }</style>
+</body>
+</html>

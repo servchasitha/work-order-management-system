@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="https://www.singerslfiles.com/images/singer-logos/singer_favicon.ico" type="image/x-icon">
+    <title>Work Order Form</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f7fc;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            text-align: center;
+            padding: 20px;
+            background-color: red;
+            color: white;
+            margin: 0;
+        }
+
+        .container {
+            width: 80%;
+            margin: 20px auto;
+            padding: 30px;
+            background-color: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+
+        label {
+            display: block;
+            font-size: 16px;
+            margin-bottom: 8px;
+            color: #333;
+        }
+
+        input[type="text"], input[type="date"], select {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+
+        input[type="text"]:focus, input[type="date"]:focus, select:focus {
+            border-color: blue;
+            outline: none;
+        }
+
+        button {
+            background-color: red;
+            color: white;
+            padding: 15px 30px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: blue;
+        }
+
+        #woDetails {
+            font-weight: bold;
+            font-size: 18px;
+            color: #333;
+        }
+
+        .form-section {
+            margin-bottom: 20px;
+        }
+
+        .form-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .form-header {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 24px;
+            color: #333;
+        }
+
+        .alert {
+            background-color: #f44336;
+            color: white;
+            padding: 15px;
+            margin-bottom: 20px;
+            text-align: center;
+            border-radius: 5px;
+            display: none;
+        }
+
+        /* Spinner Styles */
+        .spinner-container {
+            display: inline-block;
+            position: relative;
+            margin-left: 10px;
+        }
+
+        .spinner {
+            border: 8px solid #f3f3f3;
+            border-top: 8px solid red;
+            border-right: 8px solid orange;
+            border-bottom: 8px solid blue;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1.5s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Hide spinner by default */
+        .spinner-container.hidden {
+            display: none;
+        }
+
+        /* Message for Work Order Close */
+        .status-message {
+            display: none;
+            font-size: 18px;
+            font-weight: bold;
+            text-align: center;
+            margin-top: 20px;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .status-message.success {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .status-message.error {
+            background-color: #f44336;
+            color: white;
+        }
+
+        .footer {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            text-align: center;
+            padding: 15px;
+            font-size: 16px;
+            font-weight: bold;
+            color: rgba(0, 0, 0, 0.2);
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Work Order Management</h1>
+
+    <!-- Alert for errors -->
+    <div id="alert" class="alert"></div>
+
+    <div class="container">
+
+        <!-- Search for Work Order -->
+        <div class="form-section">
+            <label for="woNumber">Search Work Order Number (SR OR WO NUMBER):</label>
+            <input type="text" id="woNumber" placeholder="Enter SR OR WO Number">
+            <button onclick="searchWorkOrder()">Search</button>
+
+            <!-- Spinner next to Search Button -->
+            <div id="spinnerContainer" class="spinner-container hidden">
+                <div class="spinner"></div>
+            </div>
+        </div>
+
+        <!-- Form for data entry -->
+        <div id="workOrderForm" style="display: none;">
+            <h3 class="form-header">Enter Details for SR OR WO NUMBER: <span id="woDetails"></span></h3>
+            
+            <div class="form-section">
+                <label for="repairStatus">Repair Status:</label>
+                <select id="repairStatus">
+                    <option value="REPAIR COMPLETE">Repair Complete</option>
+                    <option value="TRANSFER TO MC">Transfer to MC</option>
+                    <option value="ESTIMATE NOT APPROVED">Estimate Not Approved</option>
+                    <option value="INSPECTION ONLY">Inspection Only</option>
+                </select>
+            </div>
+
+            <div class="form-section">
+                <label for="subjobId">Subjob ID:</label>
+                <input type="text" id="subjobId">
+            </div>
+
+            <div class="form-section">
+                <label for="comments2">Comments2:</label>
+                <input type="text" id="comments2">
+            </div>
+
+            <div class="form-section">
+                <label for="woClosureDate">WO Closure Date:</label>
+                <input type="text" id="woClosureDate" readonly>
+            </div>
+
+            <button onclick="submitData()">Submit</button>
+
+            <!-- Spinner next to Submit Button -->
+            <div id="submitSpinnerContainer" class="spinner-container hidden">
+                <div class="spinner"></div>
+            </div>
+        </div>
+
+        
+
+        <!-- Status message container -->
+        <div id="statusMessage" class="status-message"></div>
+    </div>
+
+
+    
+    
+    <script>
+        const SHEETDB_API_URL = 'https://sheetdb.io/api/v1/fgo8npkoty9ud';  // Replace with your SheetDB API URL
+
+        let sheetData = [];
+
+        // Function to show the spinner
+        function showSpinner(targetId) {
+            document.getElementById(targetId).classList.remove('hidden');
+        }
+
+        // Function to hide the spinner
+        function hideSpinner(targetId) {
+            document.getElementById(targetId).classList.add('hidden');
+        }
+
+        // Function to get current date and time with AM/PM
+        function getCurrentDateTime() {
+            const now = new Date();
+            const hours = now.getHours();
+            const minutes = now.getMinutes();
+            const ampm = hours >= 12 ? 'PM' : 'AM';
+            const formattedTime = (hours % 12 || 12) + ':' + (minutes < 10 ? '0' : '') + minutes + ' ' + ampm;
+            const date = now.toLocaleDateString();
+            return `${date} ${formattedTime}`;
+        }
+
+        // Function to display status message
+        function displayStatusMessage(message, type) {
+            const statusMessage = document.getElementById('statusMessage');
+            statusMessage.innerText = message;
+            statusMessage.classList.remove('success', 'error'); // Remove existing styles
+            statusMessage.classList.add(type); // Add success/error class
+            statusMessage.style.display = 'block'; // Make the message visible
+        }
+
+        // Search for Work Order
+        function searchWorkOrder() {
+            const woNumber = document.getElementById('woNumber').value;
+            if (!woNumber) {
+                showAlert('Please enter a Work Order Number');
+                return;
+            }
+
+            showSpinner('spinnerContainer'); // Show the spinner next to search button
+
+            // Fetch data from SheetDB using the exact column name: "SR OR WO NUMBER"
+            fetch(`${SHEETDB_API_URL}?SR%20OR%20WO%20NUMBER=${woNumber}`)
+                .then(response => response.json())
+                .then(data => {
+                    hideSpinner('spinnerContainer'); // Hide the spinner
+                    if (data.length > 0) {
+                        sheetData = data;
+                        document.getElementById('workOrderForm').style.display = 'block';
+                        document.getElementById('woDetails').innerText = woNumber;
+                        // Pre-fill existing data into the form
+                        document.getElementById('repairStatus').value = data[0]['REPAIR STATUS'] || '';
+                        document.getElementById('subjobId').value = data[0]['SUBJOB ID'] || '';
+                        document.getElementById('woClosureDate').value = getCurrentDateTime(); // Set current date and time
+                    } else {
+                        showAlert('Work Order not found');
+                    }
+                })
+                .catch(error => {
+                    hideSpinner('spinnerContainer'); // Hide the spinner
+                    console.error('Error fetching work order data:', error);
+                    showAlert('Error searching Work Order');
+                });
+        }
+
+        // Submit data to SheetDB
+        function submitData() {
+            const woNumber = document.getElementById('woNumber').value;
+            const repairStatus = document.getElementById('repairStatus').value;
+            const subjobId = document.getElementById('subjobId').value;
+            const woClosureDate = document.getElementById('woClosureDate').value;
+            const comments2 = document.getElementById('comments2').value;
+
+            // Ensure the manually entered comment + date/time is in the COMMENTS2 field
+            const finalComments2 = `${comments2} ${woClosureDate}`;
+
+            if (!woNumber || !repairStatus || !subjobId || !comments2) {
+                showAlert('Please fill out all fields');
+                return;
+            }
+
+            showSpinner('submitSpinnerContainer'); // Show the spinner next to submit button
+
+            // Prepare the updated data object to send to SheetDB
+            const updatedData = {
+                "REPAIR STATUS": repairStatus,
+                "SUBJOB ID": subjobId,
+                "WO CLOSURE DATE": woClosureDate,
+                "COMMENTS2": finalComments2  // Manually entered comment + date/time
+            };
+
+            // Log the data being sent for debugging
+            console.log('Sending the following data to update the work order:', updatedData);
+
+            // Make PUT request to update data in SheetDB using exact column name
+            fetch(`${SHEETDB_API_URL}/SR%20OR%20WO%20NUMBER/${woNumber}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(updatedData),
+            })
+            .then(response => response.json())
+            .then(data => {
+                hideSpinner('submitSpinnerContainer'); // Hide the spinner
+                console.log('Response from SheetDB:', data);
+                if (data) {
+                    // Display success message
+                    displayStatusMessage(`Work Order Closed successfully on ${woClosureDate}`, 'success');
+                    document.getElementById('workOrderForm').style.display = 'none';
+                } else {
+                    displayStatusMessage('Failed to update Work Order', 'error');
+                }
+            })
+            .catch(error => {
+                hideSpinner('submitSpinnerContainer'); // Hide the spinner
+                console.error('Error updating Work Order:', error);
+                displayStatusMessage('Error updating Work Order', 'error'); // Show the error message
+            });
+        }
+
+        // Show alert message
+        function showAlert(message) {
+            const alertBox = document.getElementById('alert');
+            alertBox.innerText = message;
+            alertBox.style.display = 'block';
+            setTimeout(() => {
+                alertBox.style.display = 'none';
+            }, 5000);
+        }
+    </script>
+
+
+     <div class="footer">HASITHA ELECTRONICS & ELECTRICALS 2025</div>
+
+
+     <!-- Home icon that links to home.html with blinking effect and custom tooltip -->
+ <a href="home.html" class="home-link" style="position: fixed; bottom: 20px; right: 20px; text-decoration: none; z-index: 100;">
+    <i class="fa-solid fa-house blink" style="font-size: 40px; color: red;"></i>
+    <span class="tooltip-text">Go to Home Page</span>
+</a>
+
+
+</body>
+</html>
