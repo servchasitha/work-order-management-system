@@ -294,8 +294,10 @@ const sheetDBUrl = 'https://sheetdb.io/api/v1/fgo8npkoty9ud'; // Replace with yo
 
 // Function to calculate WO AGE based on the difference between today and the SR OR WO OPEN DATE
 function calculateWOAge(openDate) {
+    if (!openDate) return "N/A"; // Handle missing dates
     const currentDate = new Date();
     const openDateObj = new Date(openDate);
+    if (isNaN(openDateObj)) return "Invalid Date"; // Handle invalid dates
     const timeDiff = currentDate - openDateObj;
     return Math.floor(timeDiff / (1000 * 3600 * 24)); // Convert to days
 }
@@ -307,6 +309,7 @@ async function fetchWOData() {
         const data = await response.json();
 
         const tableBody = document.getElementById('woTable').getElementsByTagName('tbody')[0];
+        tableBody.innerHTML = ""; // Clear existing rows
 
         // Filter only ACTIVE rows
         const activeData = data.filter(entry => entry['WO STATUS'] === 'ACTIVE');
@@ -318,12 +321,12 @@ async function fetchWOData() {
             // Create a new table row
             const row = document.createElement('tr');
             row.innerHTML = `
-                <td>${entry['SR OR WO NUMBER']}</td>
-                <td>${entry['CUSTOMER NAME']}</td>
-                <td>${entry['WO AGE']}</td>
-                <td>${entry['WARRENTY TYPE']}</td>
-                <td>${entry['DEFECT']}</td>
-                <td>${entry['COMMENTS2']}</td>
+                <td>${entry['SR OR WO NUMBER'] || "N/A"}</td>
+                <td>${entry['CUSTOMER NAME'] || "N/A"}</td>
+                <td>${woAge}</td>
+                <td>${entry['WARRENTY TYPE'] || "N/A"}</td>
+                <td>${entry['DEFECT'] || "N/A"}</td>
+                <td>${entry['COMMENTS2'] || "N/A"}</td>
             `;
 
             // Append the row to the table
