@@ -128,7 +128,7 @@
                             '<th>SR OR WO NUMBER</th><th>CUSTOMER NAME</th><th>WO AGE</th>' +
                             '<th>WO STATUS</th><th>REPAIR STATUS</th><th>CUSTOMER MOBILE NUMBER</th>' +
                             '<th>SERIAL</th><th>DEFECT</th><th>COMMENTS2</th>' +
-                            '<th>WARRANTY TYPE</th>' +
+                            '<th>WARRENTY TYPE</th>' +
                             '<th>SR OR WO OPEN DATE</th><th>WO CLOSURE DATE</th></tr></thead><tbody>';
                         
                         data.forEach(row => {
@@ -142,7 +142,7 @@
                                 <td>${row["SERIAL"] || ''}</td>
                                 <td>${row["DEFECT"] || ''}</td>
                                 <td>${row["COMMENTS2"] || ''}</td>
-                                <td>${row["WARRNTY TYPE"] || ''}</td>
+                                <td>${row["WARRETY TYPE"] || ''}</td>
                                 <td>${row["SR OR WO OPEN DATE"] || ''}</td>
                                 <td>${row["WO CLOSURE DATE"] || ''}</td>
                             </tr>`;
@@ -162,7 +162,7 @@
             $('#downloadReport').click(function() {
                 if (reportData.length === 0) return;
                 let csvContent = "data:text/csv;charset=utf-8,";
-                let headers = ["SR OR WO NUMBER", "CUSTOMER NAME", "WO AGE", "WO STATUS", "REPAIR STATUS", "CUSTOMER MOBILE NUMBER", "SERIAL", "DEFECT", "COMMENTS2", "WARRNTY TYPE", "SR OR WO OPEN DATE", "WO CLOSURE DATE"];
+                let headers = ["SR OR WO NUMBER", "CUSTOMER NAME", "WO AGE", "WO STATUS", "REPAIR STATUS", "CUSTOMER MOBILE NUMBER", "SERIAL", "DEFECT", "COMMENTS2", "WARRENTY TYPE", "SR OR WO OPEN DATE", "WO CLOSURE DATE"];
                 csvContent += headers.join(",") + "\n";
                 
                 reportData.forEach(row => {
