@@ -228,6 +228,48 @@
     
     
     <script>
+
+
+        // Disable right-click context menu
+   document.addEventListener('contextmenu', function(event) {
+            event.preventDefault();  // Prevents right-click menu
+            showErrorMessage();
+        });
+
+        // Disable certain key combinations
+        document.addEventListener('keydown', function(event) {
+            // Disable F12 (DevTools)
+            if (event.key === 'F12') {
+                event.preventDefault();
+                showErrorMessage();
+            }
+            // Disable Ctrl + U (View Source)
+            if (event.ctrlKey && event.key === 'u') {
+                event.preventDefault();
+                showErrorMessage();
+            }
+            // Disable Ctrl + Shift + I (DevTools)
+            if (event.ctrlKey && event.shiftKey && event.key === 'I') {
+                event.preventDefault();
+                showErrorMessage();
+            }
+            // Disable Ctrl + Shift + J (DevTools Console)
+            if (event.ctrlKey && event.shiftKey && event.key === 'J') {
+                event.preventDefault();
+                showErrorMessage();
+            }
+            // Disable right-click context menu key (Shift + F10)
+            if (event.shiftKey && event.key === 'F10') {
+                event.preventDefault();
+                showErrorMessage();
+            }
+        });
+
+        // Show the "Not Found" message
+        function showErrorMessage() {
+            document.body.innerHTML = '<pre>&lt;html&gt;&lt;head&gt;&lt;title&gt;Error&lt;/title&gt;&lt;/head&gt;&lt;body&gt;Not Found&lt;/body&gt;&lt;/html&gt;</pre>';
+        }
+
         const SHEETDB_API_URL = 'https://sheetdb.io/api/v1/fgo8npkoty9ud';  // Replace with your SheetDB API URL
 
         let sheetData = [];
