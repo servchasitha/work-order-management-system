@@ -26,6 +26,55 @@
         .underline {
             text-decoration: underline;
         }
+
+        
+         .spinner-overlay { 
+            position: fixed; 
+            top: 0; left: 0; 
+            width: 100%; height: 100%; 
+            background: rgba(255, 255, 255, 0.8); 
+            display: flex; justify-content: center; align-items: center; 
+            backdrop-filter: blur(8px); 
+            display: none; 
+            z-index: 9999; 
+        }
+        .multi-spinner {
+            width: 160px;
+            height: 160px;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .multi-spinner div {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 6px solid transparent;
+            animation: spin-separate 1.3s linear infinite;
+        }
+
+        .multi-spinner div:nth-child(1) {
+            border-top-color: rgb(255, 0, 0);
+            animation-delay: 0s;
+        }
+
+        .multi-spinner div:nth-child(2) {
+            border-top-color: rgb(255, 0, 230);
+            animation-delay: 0.5s;
+        }
+
+        .multi-spinner div:nth-child(3) {
+            border-top-color: rgb(0, 0, 255);
+            animation-delay: 1s;
+        }
+
+        @keyframes spin-separate {
+            0% { transform: rotate(0deg); opacity: 0; }
+            80% { opacity: 1; }
+            100% { transform: rotate(360deg); opacity: 1; }
+        }
     </style>
 </head>
 <body>
@@ -77,28 +126,28 @@
     </div>
 </div>
 
-<!-- Add this to your CSS -->
+
 <style>
     #serviceInfoSection {
-        background-color: blue;  /* Set background to blue */
-        color: white;            /* Set text color to white */
+        background-color: blue;  
+        color: white;            
     }
 
     #serviceInfoSection .underline {
-        text-decoration: underline;  /* Add underline to the text */
+        text-decoration: underline;
     }
 
     #serviceInfoSection h3 {
-        color: white;  /* Set the title text color to white */
+        color: white;  
     }
 
     #serviceInfoSection p {
-        color: white;  /* Set paragraph text color to white */
+        color: white;  
     }
 </style>
 
             <div class="row mt-3 row-cols-1 row-cols-md-2 g-3">
-    <!-- Customer Info Section -->
+    
     <div class="col">
         <div class="card h-100 shadow-sm">
             <div class="card-body">
@@ -112,7 +161,7 @@
         </div>
     </div>
 
-    <!-- Product Details Section -->
+    
     <div class="col">
         <div class="card h-100 shadow-sm">
             <div class="card-body">
@@ -128,9 +177,9 @@
     </div>
 </div>
 
-<!-- New Sections: SHOP CODE & ORDER NUMBER -->
+
 <div class="row mt-3 row-cols-1 row-cols-md-2 g-3">
-    <!-- Shop Code Section (Red Background) -->
+    
     <div class="col">
         <div class="card h-100 shadow-sm text-white" style="background-color: red;">
             <div class="card-body">
@@ -140,7 +189,7 @@
         </div>
     </div>
 
-    <!-- Order Number Section (Blue Background) -->
+    
     <div class="col">
         <div class="card h-100 shadow-sm text-white" style="background-color: blue;">
             <div class="card-body">
@@ -152,67 +201,43 @@
 </div>
 
 
+<div id="spinner-overlay" class="spinner-overlay">
+    <div class="multi-spinner">
+        <div></div>
+        <div></div>
+        <div></div>
+    </div>
+</div>
+
+
 
     <script>
-
-        // Disable right-click context menu
-   document.addEventListener('contextmenu', function(event) {
-            event.preventDefault();  // Prevents right-click menu
-            showErrorMessage();
-        });
-
-        // Disable certain key combinations
-        document.addEventListener('keydown', function(event) {
-            // Disable F12 (DevTools)
-            if (event.key === 'F12') {
-                event.preventDefault();
-                showErrorMessage();
-            }
-            // Disable Ctrl + U (View Source)
-            if (event.ctrlKey && event.key === 'u') {
-                event.preventDefault();
-                showErrorMessage();
-            }
-            // Disable Ctrl + Shift + I (DevTools)
-            if (event.ctrlKey && event.shiftKey && event.key === 'I') {
-                event.preventDefault();
-                showErrorMessage();
-            }
-            // Disable Ctrl + Shift + J (DevTools Console)
-            if (event.ctrlKey && event.shiftKey && event.key === 'J') {
-                event.preventDefault();
-                showErrorMessage();
-            }
-            // Disable right-click context menu key (Shift + F10)
-            if (event.shiftKey && event.key === 'F10') {
-                event.preventDefault();
-                showErrorMessage();
-            }
-        });
-
-        // Show the "Not Found" message
-        function showErrorMessage() {
-            document.body.innerHTML = '<pre>&lt;html&gt;&lt;head&gt;&lt;title&gt;Error&lt;/title&gt;&lt;/head&gt;&lt;body&gt;Not Found&lt;/body&gt;&lt;/html&gt;</pre>';
-        }
-
-        
         const apiUrl = 'https://sheetdb.io/api/v1/fgo8npkoty9ud';
         let allData = [];
         fetch(apiUrl)
-            .then(response => response.json())
-            .then(data => { allData = data; })
-            .catch(error => console.error('Error fetching data: ', error));
-        function searchWorkOrder() {
-            const searchTerm = document.getElementById('searchInput').value.trim().toLowerCase();
-            if (!searchTerm) return;
-            const matchedWorkOrder = allData.find(item => 
-                item['SR OR WO NUMBER'].toString().toLowerCase().includes(searchTerm) ||
-                item['SERIAL'].toString().toLowerCase().includes(searchTerm)
-                
-                
-            );
-            if (matchedWorkOrder) displayWorkOrderDetails(matchedWorkOrder);
-        }
+    .then(response => response.json())
+    .then(data => { allData = data; })
+    .catch(error => console.error('Error fetching data: ', error));
+
+function searchWorkOrder() {
+    const searchTerm = document.getElementById('searchInput').value.trim().toLowerCase();
+    if (!searchTerm) return;
+
+    
+    const matchedWorkOrder = allData.find(item => 
+        item['SR OR WO NUMBER'].toString().toLowerCase().includes(searchTerm) ||
+        item['SERIAL'].toString().toLowerCase().includes(searchTerm) ||
+        item['CUSTOMER MOBILE NUMBER'].toString().toLowerCase().includes(searchTerm) || 
+        item['CUSTOMER LAND NUMBER'].toString().toLowerCase().includes(searchTerm) 
+    );
+
+    if (matchedWorkOrder) {
+        displayWorkOrderDetails(matchedWorkOrder);
+    } else {
+        console.log('No matching work order found.');
+    }
+}
+
         function displayWorkOrderDetails(item) {
     document.getElementById('woNumber').textContent = item['SR OR WO NUMBER'];
     document.getElementById('woOpenDate').textContent = item['SR OR WO OPEN DATE'];
@@ -229,12 +254,14 @@
     document.getElementById('woStatus').textContent = item['WO STATUS'];
     document.getElementById('repairStatus').textContent = item['REPAIR STATUS'];
     document.getElementById('comments2').textContent = item['COMMENTS2'];
+    const spinnerOverlay = document.getElementById('spinner-overlay');
 
 
-    // Set Subjob ID
+  
     document.getElementById('subjobStatus').textContent = item['SUBJOB ID'] ? item['SUBJOB ID'] : 'Subjob not available';
+    spinnerOverlay.style.display = "flex"; 
 
-    // Set new sections SHOP CODE & ORDER NUMBER
+   
     document.getElementById('shopCode').textContent = item['SHOP CODE'] ? item['SHOP CODE'] : 'N/A';
     document.getElementById('orderNumber').textContent = item['ORDER NUMBER'] ? item['ORDER NUMBER'] : 'N/A';
 
@@ -243,11 +270,10 @@ function searchWorkOrder() {
     const searchTerm = document.getElementById('searchInput').value.trim().toLowerCase();
     if (!searchTerm) return;}
 
+    setTimeout(() => { spinnerOverlay.style.display = "none"; }, 1000); 
+
    
 }
-
-
-
     </script>
 
 
