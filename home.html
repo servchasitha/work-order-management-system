@@ -132,22 +132,6 @@
                 }
             })
             .catch(error => console.error('Error fetching username:', error));
-
-            function logout() {
-            sessionStorage.clear(); // Clear login session
-            window.location.href = "index.html";
-        }
-
-        // Prevent accessing without login
-        if (sessionStorage.getItem("isLoggedIn") !== "true") {
-            window.location.href = "home.html";
-        }
-
-        // Disable Back Button After Logout
-        window.history.replaceState(null, null, window.location.href);
-        window.onpopstate = function () {
-            window.history.go(1);
-        };
             
     </script>
 
