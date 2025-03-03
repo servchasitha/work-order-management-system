@@ -119,48 +119,6 @@
 <body>
 
     <script>
-
-        // Disable right-click context menu
-   document.addEventListener('contextmenu', function(event) {
-            event.preventDefault();  // Prevents right-click menu
-            showErrorMessage();
-        });
-
-        // Disable certain key combinations
-        document.addEventListener('keydown', function(event) {
-            // Disable F12 (DevTools)
-            if (event.key === 'F12') {
-                event.preventDefault();
-                showErrorMessage();
-            }
-            // Disable Ctrl + U (View Source)
-            if (event.ctrlKey && event.key === 'u') {
-                event.preventDefault();
-                showErrorMessage();
-            }
-            // Disable Ctrl + Shift + I (DevTools)
-            if (event.ctrlKey && event.shiftKey && event.key === 'I') {
-                event.preventDefault();
-                showErrorMessage();
-            }
-            // Disable Ctrl + Shift + J (DevTools Console)
-            if (event.ctrlKey && event.shiftKey && event.key === 'J') {
-                event.preventDefault();
-                showErrorMessage();
-            }
-            // Disable right-click context menu key (Shift + F10)
-            if (event.shiftKey && event.key === 'F10') {
-                event.preventDefault();
-                showErrorMessage();
-            }
-        });
-
-        // Show the "Not Found" message
-        function showErrorMessage() {
-            document.body.innerHTML = '<pre>&lt;html&gt;&lt;head&gt;&lt;title&gt;Error&lt;/title&gt;&lt;/head&gt;&lt;body&gt;Not Found&lt;/body&gt;&lt;/html&gt;</pre>';
-        }
-
-        
         function toggleSidebar() {
             document.getElementById("sidebar").classList.toggle("show");
         }
@@ -195,6 +153,7 @@
         <a class="nav-link" href="edit.html"><i class="bi bi-pencil-square"></i> Edit Work Orders</a>
         <a class="nav-link" href="search.html"><i class="bi bi-search"></i> Search Work Orders</a>
         <a class="nav-link" href="reports.html"><i class="bi bi-bar-chart"></i> Reports</a>
+        <a class="nav-link" href="productivity.html"><i class="bi bi-reception-4"></i>Productivity Reports</a>
         <span class="close-btn" onclick="toggleSidebar()">Menu</span>
     </div>
 
@@ -208,61 +167,6 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 
 
-
-    <!-- Home icon that links to home.html with blinking effect and custom tooltip -->
- <a href="home.html" class="home-link" style="position: fixed; bottom: 20px; right: 20px; text-decoration: none; z-index: 100;">
-    <i class="fa-solid fa-house blink" style="font-size: 40px; color: red;"></i>
-    <span class="tooltip-text">Go to Home Page</span>
-</a>
-
-
-<!-- Rest of your content here... -->
-
-<style>
-    /* Blinking effect for the home icon */
-    @keyframes blink {
-        0% {
-            opacity: 1;
-        }
-        50% {
-            opacity: 0;
-        }
-        100% {
-            opacity: 1;
-        }
-    }
-
-    .blink {
-        animation: blink 1s infinite;
-    }
-
-    /* Tooltip text styling */
-    .home-link {
-        position: relative;
-        display: inline-block;
-    }
-
-    .tooltip-text {
-        visibility: hidden;
-        width: 120px;
-        background-color: #555;
-        color: #fff;
-        text-align: center;
-        border-radius: 5px;
-        padding: 5px;
-        position: absolute;
-        bottom: 100%; /* Position the tooltip above the icon */
-        left: 50%;
-        margin-left: -60px; /* Center the tooltip */
-        opacity: 0;
-        transition: opacity 0.3s;
-    }
-
-    .home-link:hover .tooltip-text {
-        visibility: visible;
-        opacity: 1;
-    }
-</style>
 
 
 </body>
