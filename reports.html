@@ -161,7 +161,7 @@
                 $('.spinner-container').show();
                 $('#reportPreview').html(""); // Clear previous data
 
-                fetch(`https://sheetdb.io/api/v1/fgo8npkoty9ud/search?WO%20STATUS=${encodeURIComponent(status)}`)
+                fetch(`https://api.sheetbest.com/sheets/b45eb9fe-7d95-44c5-891c-22fb9816405b/search?WO%20STATUS=${encodeURIComponent(status)}`)
                     .then(response => response.json())
                     .then(data => {
                         reportData = data;
